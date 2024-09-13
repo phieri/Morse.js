@@ -4,6 +4,7 @@
  * http://github.com/mattt/Morse.js
  *
  * Copyright (c) 2010-2012 Mattt Thompson
+ *               2024- Philip Eriksson
  * Licensed under the MIT licenses.
  */
 

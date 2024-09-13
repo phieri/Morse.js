@@ -8,10 +8,10 @@ This plugin will transcribe the morse code for text in the selected elements. In
 ## Usage
 
 ``` javascript
-$("p").morseCode({bpm:12});
+$("p").morseCode({wpm:12});
 ```
 
-- `bpm` rate at which the message is played (default: 12, or 1 unit = 100ms)
+- `wpm` rate at which the message is played (default: 12, or 1 unit = 100&nbsp;ms)
 
 In addition, there are two namespaced events that you can `trigger` and `bind` to:
 
@@ -24,12 +24,11 @@ In addition, there are two namespaced events that you can `trigger` and `bind` t
 
 ## Credit
 
-Javascript client-side WAV generation based on code by sk89q
-See [http://sk89q.therisenrealm.com/](http://sk89q.therisenrealm.com/) for more info.
+Javascript client-side WAV generation based on code by sk89q.
 
 Thanks to [Justin Slepak](https://github.com/jrslepak) for adding support for punctuation characters.
 
-Mattt Thompson for developing this library.
+[Mattt Thompson](https://github.com/mattt) for originally developing this library.
 
 ## License
 
