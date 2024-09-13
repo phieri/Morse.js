@@ -165,11 +165,6 @@
         return "data:audio/wav;base64," + escape(btoa([header, chunk1, chunk2].join('')));
       };
 
-      // Base 64 encoding function, for browsers that do not support btoa()
-      // by Tyler Akins (http://rumkin.com), available in the public domain
-      var btoa=function(b){var c="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",h="",a,d,e,j,i,f,g=0;do{a=b.charCodeAt(g++);d=b.charCodeAt(g++);e=b.charCodeAt(g++);j=a>>2;a=(a&3)<<4|d>>4;i=(d&15)<<2|e>>6;f=e&63;if(isNaN(d))i=f=64;else if(isNaN(e))f=64;h=h+c.charAt(j)+c.charAt(a)+c.charAt(i)+c.charAt(f)}while(g<b.length);return h};
-
-
       // pack() emulation (from the PHP version), for binary crunching
       var pack = function(e){for(var b="",c=1,d=0;d<e.length;d++){var f=e.charAt(d),a=arguments[c];c++;switch(f){case "a":b+=a[0]+"\u0000";break;case "A":b+=a[0]+" ";break;case "C":case "c":b+=String.fromCharCode(a);break;case "n":b+=String.fromCharCode(a>>8&255,a&255);break;case "v":b+=String.fromCharCode(a&255,a>>8&255);break;case "N":b+=String.fromCharCode(a>>24&255,a>>16&255,a>>8&255,a&255);break;case "V":b+=String.fromCharCode(a&255,a>>8&255,a>>16&255,a>>24&255);break;case "x":c--;b+="\u0000";break;default:throw new Error("Unknown pack format character '"+
       f+"'");}}return b};
