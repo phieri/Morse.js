@@ -5,14 +5,6 @@ Samuel F. B. Morse created a code for the electric telegraph in the early 1840s 
 
 This plugin will transcribe the morse code for text in the selected elements. In browsers that support the [`<ruby>` HTML element](http://www.w3.org/TR/1998/WD-ruby-19981221/), the transcription will appear above the text. By default, clicking on these elements will play the corresponding audio for the transcription.
 
-## Demo
-
-Bleeps and bloops speak louder than words:
-
-Try it out at: [http://mattt.github.com/Morse.js/](http://mattt.github.com/Morse.js/ "Try out Morse.js!")
-
-*Note:* Requires browser with support for HTML5 `<audio>`, such as [Safari 4](http://www.apple.com/safari/download/), [Firefox 3.5](http://www.mozilla.com/firefox/), or [Chrome](http://www.google.com/chrome/)
-
 ## Usage
 
 ``` javascript
@@ -37,13 +29,7 @@ See [http://sk89q.therisenrealm.com/](http://sk89q.therisenrealm.com/) for more 
 
 Thanks to [Justin Slepak](https://github.com/jrslepak) for adding support for punctuation characters.
 
-## Contact
-
-Mattt Thompson
-
-- http://github.com/mattt
-- http://twitter.com/mattt
-- m@mattt.me
+Mattt Thompson for developing this library.
 
 ## License
 
