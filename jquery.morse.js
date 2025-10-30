@@ -5,10 +5,11 @@
  *
  * Copyright (c) 2010-2012 Mattt Thompson
  *               2024- Philip Eriksson
- * Licensed under the MIT licenses.
+ * Licensed under the MIT license.
  */
 
 (function($){
+  'use strict';
   Morse = {
     wpm: 12,
     code: {
@@ -41,12 +42,12 @@
 
       $el.text('');
 
-      for (i in tokens) {
+      for (var i = 0; i < tokens.length; i++) {
         var token = tokens[i];
         var letters = token.split('');
         var symbols = [];
 
-        for (j in letters) {
+        for (var j = 0; j < letters.length; j++) {
           var letter = letters[j];
           var symbol = Morse.code[letter.toLowerCase()];
           if (symbol) {
@@ -59,11 +60,11 @@
 
       $el.each(function() {
         if ($("#morse-code-output")[0] === undefined) {
-          var audio = $('<audio id="morse-code-output"></audio>').bind("morse.mute", function(){this.pause();})
+          var audio = $('<audio id="morse-code-output"></audio>').bind("morse.mute", function(){this.pause();});
           $(this).after(audio);
         }
 
-        $(this).bind('morse.emit', Morse.emit).bind('click', function(){ $(this).trigger("morse.emit")});
+        $(this).bind('morse.emit', Morse.emit).bind('click', function(){ $(this).trigger("morse.emit"); });
       });
     },
 
@@ -76,8 +77,10 @@
         symbols.push($(this).text());
       });
 
-      // Javascript WAV generation based on code by sk89q (http://sk89q.therisenrealm.com/)
-      var generate = function(symbols, options) {
+      /**
+       * Javascript WAV generation based on code by sk89q (http://sk89q.therisenrealm.com/)
+       */
+      var generate = function(symbols, opts) {
         var defaults = {
           channels: 1,
           sampleRate: 1012,
@@ -87,7 +90,7 @@
           volume: 32767
         };
 
-        var options = $.extend(defaults, options);
+        var options = $.extend(defaults, opts);
 
         var channels      = options.channels;
         var sampleRate    = options.sampleRate;
@@ -102,30 +105,31 @@
         var tone = function(length) {
           for (var i = 0; i < sampleRate * unit * length; i++) {
             for (var c = 0; c < channels; c++) {
-                var v = volume * Math.sin((2 * Math.PI) * (i / sampleRate) * frequency);
-                data.push(pack("v", v)); samples++;
+              var v = volume * Math.sin((2 * Math.PI) * (i / sampleRate) * frequency);
+              data.push(pack("v", v)); 
+              samples++;
             }
           }
-        }
+        };
 
         var silence = function(length) {
           for (var i = 0; i < sampleRate * unit * length; i++) {
             for (var c = 0; c < channels; c++) {
-                data.push(pack("v", 0)); samples++;
+              data.push(pack("v", 0)); 
+              samples++;
             }
           }
-        }
+        };
 
-        for (var i in symbols) {
-          var length;
+        for (var i = 0; i < symbols.length; i++) {
           var symbol = symbols[i];
-          if (symbol == '|') {
+          if (symbol === '|') {
             silence(7);
           } else {
-            if (symbol == '.') {
+            if (symbol === '.') {
               tone(1);
               silence(1);
-            } else if (symbol == '_') {
+            } else if (symbol === '_') {
               tone(3);
               silence(1);
             } else {
@@ -170,13 +174,17 @@
       f+"'");}}return b};
 
       $("#morse-code-output").attr('src', generate(symbols.join('|'), {unit: 1.200 / Morse.wpm}))[0].play();
-    },
+    }
   };
 
   $.fn.extend({
-    morseCode: function() {
+    morseCode: function(options) {
+      options = options || {};
+      if (options.wpm) {
+        Morse.wpm = options.wpm;
+      }
       return this.each(function(){
-        (new Morse.annotate(this));
+        Morse.annotate(this);
       });
     }
   });

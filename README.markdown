@@ -7,16 +7,39 @@ This plugin will transcribe the morse code for text in the selected elements. In
 
 ## Usage
 
-``` javascript
-$("p").morseCode({wpm:12});
+Include jQuery and the Morse.js plugin in your HTML:
+
+``` html
+<script src="https://code.jquery.com/jquery-1.4.min.js"></script>
+<script src="jquery.morse.js"></script>
 ```
 
-- `wpm` rate at which the message is played (default: 12, or 1 unit = 100&nbsp;ms)
+Then apply the plugin to your text elements:
+
+``` javascript
+$("p").morseCode({wpm: 12});
+```
+
+### Options
+
+- `wpm` - Rate at which the message is played (default: 12, where 1 unit = 100 ms)
+
+### Events
 
 In addition, there are two namespaced events that you can `trigger` and `bind` to:
 
-- `morse.emit` will generate and play the tones for morse code elements
-- `morse.mute` will stop morse code tone sounds from `<audio>` elements
+- `morse.emit` - Generates and plays the tones for morse code elements
+- `morse.mute` - Stops morse code tone sounds from `<audio>` elements
+
+Example:
+
+``` javascript
+// Manually trigger morse code playback
+$("p.morse-code").trigger("morse.emit");
+
+// Stop playback
+$("#morse-code-output").trigger("morse.mute");
+```
 
 ## Requirements
 
@@ -24,7 +47,7 @@ In addition, there are two namespaced events that you can `trigger` and `bind` t
 
 ## Credit
 
-Javascript client-side WAV generation based on code by sk89q.
+JavaScript client-side WAV generation based on code by sk89q.
 
 Thanks to [Justin Slepak](https://github.com/jrslepak) for adding support for punctuation characters.
 
