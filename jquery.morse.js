@@ -64,7 +64,7 @@
           $(this).after(audio);
         }
 
-        $(this).bind('morse.emit', Morse.emit).bind('click', () => { $(this).trigger("morse.emit"); });
+        $(this).bind('morse.emit', Morse.emit).bind('click', function(){ $(this).trigger("morse.emit"); });
       });
     },
 
@@ -170,7 +170,7 @@
       };
 
       // pack() emulation (from the PHP version), for binary crunching
-      const pack = (e) => {
+      const pack = function(e) {
         let b = "";
         let c = 1;
         for (let d = 0; d < e.length; d++) {
