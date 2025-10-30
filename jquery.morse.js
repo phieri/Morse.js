@@ -55,7 +55,11 @@
           }
         }
 
-        $el.append(`<ruby class="morse-code"><rb>${token}</rb><rt>${symbols.join(' ')}&nbsp;</rt></ruby>`);
+        // Create ruby element with proper text escaping
+        const ruby = $('<ruby class="morse-code"></ruby>');
+        ruby.append($('<rb></rb>').text(token));
+        ruby.append($('<rt></rt>').text(symbols.join(' ') + '\u00A0'));
+        $el.append(ruby);
       }
 
       $el.each(function() {
