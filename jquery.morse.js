@@ -64,11 +64,11 @@
 
       $el.each(function() {
         if ($("#morse-code-output")[0] === undefined) {
-          const audio = $('<audio id="morse-code-output"></audio>').bind("morse.mute", function(){this.pause();});
+          const audio = $('<audio id="morse-code-output"></audio>').on("morse.mute", function(){this.pause();});
           $(this).after(audio);
         }
 
-        $(this).bind('morse.emit', Morse.emit).bind('click', function(){ $(this).trigger("morse.emit"); });
+        $(this).on('morse.emit', Morse.emit).on('click', function(){ $(this).trigger("morse.emit"); });
       });
     },
 
@@ -94,7 +94,7 @@
           volume: 32767
         };
 
-        const options = $.extend(defaults, opts);
+        const options = $.extend({}, defaults, opts);
 
         const channels      = options.channels;
         const sampleRate    = options.sampleRate;
