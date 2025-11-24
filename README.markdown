@@ -43,7 +43,7 @@ $("#morse-code-output").trigger("morse.mute");
 
 ## Requirements
 
-- jQuery 1.4+
+- jQuery 1.7+ (compatible with jQuery 4.0+)
 
 ## Credit
 
