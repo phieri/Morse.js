@@ -94,7 +94,7 @@
           volume: 32767
         };
 
-        const options = $.extend(defaults, opts);
+        const options = $.extend({}, defaults, opts);
 
         const channels      = options.channels;
         const sampleRate    = options.sampleRate;
