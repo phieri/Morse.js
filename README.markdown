@@ -7,10 +7,13 @@ This plugin will transcribe the morse code for text in the selected elements. In
 
 ## Usage
 
-Include jQuery and the Morse.js plugin in your HTML:
+### Browser (script tags)
+
+Load `src/audio-player.js` first, then jQuery, then the plugin:
 
 ``` html
-<script src="https://code.jquery.com/jquery-1.4.min.js"></script>
+<script src="src/audio-player.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.min.js"></script>
 <script src="jquery.morse.js"></script>
 ```
 
@@ -20,34 +23,83 @@ Then apply the plugin to your text elements:
 $("p").morseCode({wpm: 12});
 ```
 
-### Options
+### AMD (RequireJS)
 
-- `wpm` - Rate at which the message is played (default: 12, where 1 unit = 100 ms)
+``` javascript
+require(['jquery', 'src/audio-player', 'jquery.morse'], function ($) {
+  $("p").morseCode({wpm: 12});
+});
+```
 
-### Events
+### CommonJS / bundlers (webpack, rollup, …)
+
+``` javascript
+const $ = require('jquery');
+require('./jquery.morse'); // registers $.fn.morseCode
+$("p").morseCode({wpm: 12});
+```
+
+You can also use the audio module independently:
+
+``` javascript
+const { playMorseSymbols, stopPlayback } = require('./src/audio-player');
+playMorseSymbols('._  _...  ._. | ...').then(() => console.log('done'));
+```
+
+## Options
+
+- `wpm` – Rate at which the message is played (default: `12`, where 1 dit unit ≈ 100 ms)
+
+## Events
 
 In addition, there are two namespaced events that you can `trigger` and `bind` to:
 
-- `morse.emit` - Generates and plays the tones for morse code elements
-- `morse.mute` - Stops morse code tone sounds from `<audio>` elements
+- `morse.emit` – Generates and plays the tones for Morse code elements
+- `morse.mute` – Stops any active Morse audio playback
 
 Example:
 
 ``` javascript
-// Manually trigger morse code playback
+// Manually trigger Morse code playback
 $("p.morse-code").trigger("morse.emit");
 
 // Stop playback
 $("#morse-code-output").trigger("morse.mute");
 ```
 
+## Audio API (`src/audio-player.js`)
+
+The audio module can be used standalone, independent of jQuery:
+
+``` javascript
+// Play a Morse symbol string
+const promise = MorseAudioPlayer.playMorseSymbols('._  _...', {
+  mode:       'web-audio', // 'web-audio' (default) | 'wav-blob'
+  wpm:        12,          // words per minute
+  frequency:  440,         // tone frequency in Hz
+  volume:     0.5,         // 0–1
+  sampleRate: 8000         // for 'wav-blob' mode only
+});
+promise.then(() => console.log('playback complete'));
+
+// Stop immediately
+MorseAudioPlayer.stopPlayback();
+```
+
+### Playback modes
+
+| Mode | Description |
+|---|---|
+| `'web-audio'` | *(default)* Uses the Web Audio API. Zero memory overhead; precise scheduling. |
+| `'wav-blob'` | Builds a 16-bit PCM WAV file with `ArrayBuffer`/`DataView` and plays it via a Blob URL. Useful as an explicit fallback. |
+
+The library automatically selects `'web-audio'` when `AudioContext` is available, and falls back to `'wav-blob'` otherwise.
+
 ## Requirements
 
 - jQuery 1.7+ (compatible with jQuery 4.0+)
 
 ## Credit
-
-JavaScript client-side WAV generation based on code by sk89q.
 
 Thanks to [Justin Slepak](https://github.com/jrslepak) for adding support for punctuation characters.
 

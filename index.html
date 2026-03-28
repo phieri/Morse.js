@@ -83,18 +83,30 @@
 
   <h2>Usage</h2>
 
-  <p>Include jQuery and the plugin, then call <code>morseCode()</code> on your elements:</p>
+  <p>Include the audio module, jQuery, and the plugin, then call <code>morseCode()</code> on your elements:</p>
 
-<pre><code>&lt;script src="https://code.jquery.com/jquery-3.7.1.min.js"&gt;&lt;/script&gt;
+<pre><code>&lt;script src="src/audio-player.js"&gt;&lt;/script&gt;
+&lt;script src="https://code.jquery.com/jquery-3.7.1.min.js"&gt;&lt;/script&gt;
 &lt;script src="jquery.morse.js"&gt;&lt;/script&gt;
 &lt;script&gt;
   $("p").morseCode({ wpm: 12 });
 &lt;/script&gt;</code></pre>
 
+  <p>Audio is played via the <strong>Web Audio API</strong> by default, with a WAV Blob fallback for environments without <code>AudioContext</code>. You can also use the audio module independently:</p>
+
+<pre><code>// Play a symbol string and get a Promise that resolves when done
+MorseAudioPlayer.playMorseSymbols("._  _...", { wpm: 12 }).then(() =&gt; {
+  console.log("playback complete");
+});
+
+// Stop immediately
+MorseAudioPlayer.stopPlayback();</code></pre>
+
   <footer>
     <a href="https://github.com/phieri/Morse.js">Morse.js on GitHub</a> — MIT License
   </footer>
 
+  <script src="src/audio-player.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="jquery.morse.js"></script>
   <script>
