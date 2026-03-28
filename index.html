@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Morse.js — Example</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: Georgia, "Times New Roman", serif;
+      max-width: 40em;
+      margin: 2em auto;
+      padding: 0 1em;
+      line-height: 1.6;
+      color: #222;
+      background: #fafafa;
+    }
+
+    h1, h2 { font-weight: normal; }
+
+    h1 { font-size: 2em; margin-bottom: 0.25em; }
+    h2 { font-size: 1.25em; color: #555; margin-top: 0; }
+
+    ruby.morse-code {
+      cursor: pointer;
+    }
+
+    ruby.morse-code:hover rb {
+      background: #fffacd;
+    }
+
+    rt {
+      font-family: monospace;
+      font-size: 0.55em;
+      color: #888;
+    }
+
+    pre {
+      background: #f0f0f0;
+      padding: 1em;
+      overflow-x: auto;
+      border-radius: 4px;
+    }
+
+    code {
+      font-size: 0.9em;
+    }
+
+    footer {
+      margin-top: 3em;
+      border-top: 1px solid #ddd;
+      padding-top: 1em;
+      font-size: 0.85em;
+      color: #777;
+    }
+
+    .hint {
+      background: #eef6ff;
+      border-left: 3px solid #4a90d9;
+      padding: 0.75em 1em;
+      margin: 1.5em 0;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Morse.js</h1>
+  <h2>A jQuery plugin that annotates text with Morse Code</h2>
+
+  <div class="hint">
+    Click on any of the annotated paragraphs below to hear the text played as Morse code.
+  </div>
+
+  <h2>Demo</h2>
+
+  <p class="morse">Hello World</p>
+
+  <p class="morse">Morse code was created by Samuel Morse in the 1840s</p>
+
+  <p class="morse">SOS</p>
+
+  <h2>Usage</h2>
+
+  <p>Include jQuery and the plugin, then call <code>morseCode()</code> on your elements:</p>
+
+<pre><code>&lt;script src="https://code.jquery.com/jquery-3.7.1.min.js"&gt;&lt;/script&gt;
+&lt;script src="jquery.morse.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  $("p").morseCode({ wpm: 12 });
+&lt;/script&gt;</code></pre>
+
+  <footer>
+    <a href="https://github.com/phieri/Morse.js">Morse.js on GitHub</a> — MIT License
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="jquery.morse.js"></script>
+  <script>
+    $(function() {
+      $(".morse").morseCode({ wpm: 12 });
+    });
+  </script>
+</body>
+</html>
