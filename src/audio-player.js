@@ -59,6 +59,32 @@ function () {
     return _context;
   }
 
+  function resolvePlaybackMode(modeOption) {
+    if (modeOption === 'wav-blob') {
+      return 'wav-blob';
+    }
+    if (modeOption === 'web-audio') {
+      return 'web-audio';
+    }
+    return _AudioContext ? 'web-audio' : 'wav-blob';
+  }
+
+  function normalizeOptions(options) {
+    const opts = options || {};
+    const wpm = typeof opts.wpm === 'number' ? opts.wpm : 12;
+    const unit = typeof opts.unit === 'number' ? opts.unit : (1.2 / wpm);
+    const frequency = typeof opts.frequency === 'number' ? opts.frequency : 440;
+    const volume = typeof opts.volume === 'number' ? opts.volume : 0.5;
+    const sampleRate = typeof opts.sampleRate === 'number' ? opts.sampleRate : 8000;
+    const mode = resolvePlaybackMode(opts.mode);
+
+    return { wpm, unit, frequency, volume, sampleRate, mode };
+  }
+
+  function clampVolume(volume) {
+    return Math.max(0, Math.min(1, volume));
+  }
+
   /**
    * Schedule a sine-wave oscillator burst on the given destination node.
    *
@@ -135,7 +161,8 @@ function () {
     const { unit, frequency, volume, sampleRate } = opts;
     const channels     = 1;
     const bitsPerSample = 16;
-    const maxAmp       = Math.round(volume * 32767);
+    const clampedVolume = clampVolume(volume);
+    const maxAmp       = Math.round(clampedVolume * 32767);
 
     // Collect Int16Array PCM sections to avoid a large up-front allocation
     const sections = [];
@@ -268,14 +295,10 @@ function () {
    * @returns {Promise<void>}               – Resolves when playback completes
    */
   function playMorseSymbols(symbolString, options) {
-    const opts       = options || {};
-    const wpm        = opts.wpm        || 12;
-    const unit       = opts.unit       !== undefined ? opts.unit : (1.2 / wpm);
-    const frequency  = opts.frequency  || 440;
-    const volume     = opts.volume     !== undefined ? opts.volume : 0.5;
-    const sampleRate = opts.sampleRate || 8000;
-    const mode       = opts.mode       || (_AudioContext ? 'web-audio' : 'wav-blob');
+    stopPlayback();
 
+    const opts = normalizeOptions(options);
+    const { unit, frequency, volume, sampleRate, mode } = opts;
     const resolvedOpts = { unit, frequency, volume, sampleRate };
 
     if (mode === 'web-audio' && _AudioContext) {
