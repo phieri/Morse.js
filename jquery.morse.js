@@ -74,9 +74,10 @@ function ($, MorseAudioPlayer) {
       Morse.ensureOutputController($el);
       $el.each(function () {
         const $element = $(this);
-        $element.off('morse.emit click');
-        $element.on('morse.emit', Morse.emit);
-        $element.on('click', function () {
+        // Remove only the handlers that this plugin added earlier.
+        $element.off('morse.emit.morsePlugin click.morsePlugin');
+        $element.on('morse.emit.morsePlugin', Morse.emit);
+        $element.on('click.morsePlugin', function () {
           $(this).trigger('morse.emit');
         });
       });
@@ -84,8 +85,8 @@ function ($, MorseAudioPlayer) {
 
     encodeToken(token) {
       const symbols = [];
-      for (let i = 0; i < token.length; i++) {
-        const symbol = Morse.code[token.charAt(i).toLowerCase()];
+      for (const char of token) {
+        const symbol = Morse.code[char.toLowerCase()];
         if (symbol) {
           symbols.push(symbol);
         }
@@ -113,7 +114,7 @@ function ($, MorseAudioPlayer) {
             MorseAudioPlayer.stopPlayback();
           }
         })
-        .insertAfter($el.first());
+        .insertAfter($el.last());
     },
 
     emit() {

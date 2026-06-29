@@ -59,18 +59,26 @@ function () {
     return _context;
   }
 
+  function resolvePlaybackMode(modeOption) {
+    if (modeOption === 'wav-blob') {
+      return 'wav-blob';
+    }
+    if (modeOption === 'web-audio') {
+      return 'web-audio';
+    }
+    return _AudioContext ? 'web-audio' : 'wav-blob';
+  }
+
   function normalizeOptions(options) {
     const opts = options || {};
-    const wpm = opts.wpm !== undefined ? opts.wpm : 12;
-    const unit = opts.unit !== undefined ? opts.unit : (1.2 / wpm);
-    const frequency = opts.frequency !== undefined ? opts.frequency : 440;
-    const volume = opts.volume !== undefined ? opts.volume : 0.5;
-    const sampleRate = opts.sampleRate !== undefined ? opts.sampleRate : 8000;
-    const mode = opts.mode === 'wav-blob'
-      ? 'wav-blob'
-      : (opts.mode === 'web-audio' ? 'web-audio' : (_AudioContext ? 'web-audio' : 'wav-blob'));
+    const wpm = typeof opts.wpm === 'number' ? opts.wpm : 12;
+    const unit = typeof opts.unit === 'number' ? opts.unit : (1.2 / wpm);
+    const frequency = typeof opts.frequency === 'number' ? opts.frequency : 440;
+    const volume = typeof opts.volume === 'number' ? opts.volume : 0.5;
+    const sampleRate = typeof opts.sampleRate === 'number' ? opts.sampleRate : 8000;
+    const mode = resolvePlaybackMode(opts.mode);
 
-    return { unit, frequency, volume, sampleRate, mode };
+    return { wpm, unit, frequency, volume, sampleRate, mode };
   }
 
   function clampVolume(volume) {
@@ -153,8 +161,8 @@ function () {
     const { unit, frequency, volume, sampleRate } = opts;
     const channels     = 1;
     const bitsPerSample = 16;
-    const safeVolume   = clampVolume(volume);
-    const maxAmp       = Math.round(safeVolume * 32767);
+    const clampedVolume = clampVolume(volume);
+    const maxAmp       = Math.round(clampedVolume * 32767);
 
     // Collect Int16Array PCM sections to avoid a large up-front allocation
     const sections = [];
