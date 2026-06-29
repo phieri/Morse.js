@@ -49,6 +49,12 @@ playMorseSymbols('._  _...  ._. | ...').then(() => console.log('done'));
 ## Options
 
 - `wpm` – Rate at which the message is played (default: `12`, where 1 dit unit ≈ 100 ms)
+- `mode` – For the standalone audio module, choose `'web-audio'` (default) or `'wav-blob'`
+- `frequency` – Tone frequency in Hz for the standalone audio module (default: `440`)
+- `volume` – Playback volume for the standalone audio module (default: `0.5`)
+- `sampleRate` – Sample rate used by the WAV fallback (default: `8000`)
+
+When a new Morse playback request starts, any existing playback is stopped first so the latest request is the only audible one.
 
 ## Events
 
@@ -69,7 +75,7 @@ $("#morse-code-output").trigger("morse.mute");
 
 ## Audio API (`src/audio-player.js`)
 
-The audio module can be used standalone, independent of jQuery:
+The audio module can be used standalone, independent of jQuery. It exposes a shared controller that stops any current playback before starting the next request:
 
 ``` javascript
 // Play a Morse symbol string

@@ -57,47 +57,63 @@ function ($, MorseAudioPlayer) {
     },
 
     annotate(el) {
-      const $el     = $(el);
-      // Filter out empty strings that result from leading/trailing whitespace
-      const tokens  = $el.text().split(/\s+/).filter(Boolean);
+      const $el = $(el);
+      const tokens = $el.text().trim().split(/\s+/).filter(Boolean);
 
-      $el.text('');
+      $el.empty();
 
+      const rubyElements = [];
       for (const token of tokens) {
-        const symbols = [];
-
-        for (const letter of token) {
-          const symbol = Morse.code[letter.toLowerCase()];
-          if (symbol) {
-            symbols.push(symbol);
-          }
-        }
-
-        // Create ruby element with proper text escaping
-        const ruby = $('<ruby class="morse-code"></ruby>');
-        ruby.append($('<rb></rb>').text(token));
-        ruby.append($('<rt></rt>').text(symbols.join(' ') + '\u00A0'));
-        $el.append(ruby);
+        rubyElements.push(Morse.createRubyNode(token, Morse.encodeToken(token)));
       }
 
-      // Ensure a single audio-controller placeholder exists per page
-      $el.each(function () {
-        if ($('#morse-code-output').length === 0) {
-          // Keep a lightweight element with the well-known id so that existing
-          // code triggering "morse.mute" on "#morse-code-output" keeps working.
-          $('<span id="morse-code-output"></span>')
-            .on('morse.mute', () => {
-              if (MorseAudioPlayer) {
-                MorseAudioPlayer.stopPlayback();
-              }
-            })
-            .insertAfter($(this));
-        }
+      if (rubyElements.length > 0) {
+        $el.append(rubyElements);
+      }
 
-        $(this)
-          .on('morse.emit', Morse.emit)
-          .on('click', function () { $(this).trigger('morse.emit'); });
+      Morse.ensureOutputController($el);
+      $el.each(function () {
+        const $element = $(this);
+        $element.off('morse.emit click');
+        $element.on('morse.emit', Morse.emit);
+        $element.on('click', function () {
+          $(this).trigger('morse.emit');
+        });
       });
+    },
+
+    encodeToken(token) {
+      const symbols = [];
+      for (let i = 0; i < token.length; i++) {
+        const symbol = Morse.code[token.charAt(i).toLowerCase()];
+        if (symbol) {
+          symbols.push(symbol);
+        }
+      }
+      return symbols;
+    },
+
+    createRubyNode(token, symbols) {
+      const ruby = $('<ruby class="morse-code"></ruby>');
+      ruby.append($('<rb></rb>').text(token));
+      ruby.append($('<rt></rt>').text(symbols.join(' ') + '\u00A0'));
+      return ruby;
+    },
+
+    ensureOutputController($el) {
+      if ($('#morse-code-output').length > 0) {
+        return;
+      }
+
+      // Keep a lightweight element with the well-known id so that existing
+      // code triggering "morse.mute" on "#morse-code-output" keeps working.
+      $('<span id="morse-code-output"></span>')
+        .on('morse.mute', () => {
+          if (MorseAudioPlayer) {
+            MorseAudioPlayer.stopPlayback();
+          }
+        })
+        .insertAfter($el.first());
     },
 
     emit() {
@@ -106,11 +122,12 @@ function ($, MorseAudioPlayer) {
         return;
       }
 
-      // Stop any in-progress playback and notify legacy listeners
+      // Stop any in-progress playback and notify legacy listeners.
       $('#morse-code-output').trigger('morse.mute');
 
       const symbols = [];
-      $(this).find('rt').each(function () {
+      const $el = $(this);
+      $el.find('rt').each(function () {
         symbols.push($(this).text());
       });
 

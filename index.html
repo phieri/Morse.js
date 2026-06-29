@@ -92,7 +92,7 @@
   $("p").morseCode({ wpm: 12 });
 &lt;/script&gt;</code></pre>
 
-  <p>Audio is played via the <strong>Web Audio API</strong> by default, with a WAV Blob fallback for environments without <code>AudioContext</code>. You can also use the audio module independently:</p>
+  <p>Audio is played via the <strong>Web Audio API</strong> by default, with a WAV Blob fallback for environments without <code>AudioContext</code>. The shared audio controller stops any in-progress playback before starting a new request, so the latest click is always the one that plays. You can also use the audio module independently:</p>
 
 <pre><code>// Play a symbol string and get a Promise that resolves when done
 MorseAudioPlayer.playMorseSymbols("._  _...", { wpm: 12 }).then(() =&gt; {

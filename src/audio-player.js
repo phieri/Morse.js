@@ -59,6 +59,24 @@ function () {
     return _context;
   }
 
+  function normalizeOptions(options) {
+    const opts = options || {};
+    const wpm = opts.wpm !== undefined ? opts.wpm : 12;
+    const unit = opts.unit !== undefined ? opts.unit : (1.2 / wpm);
+    const frequency = opts.frequency !== undefined ? opts.frequency : 440;
+    const volume = opts.volume !== undefined ? opts.volume : 0.5;
+    const sampleRate = opts.sampleRate !== undefined ? opts.sampleRate : 8000;
+    const mode = opts.mode === 'wav-blob'
+      ? 'wav-blob'
+      : (opts.mode === 'web-audio' ? 'web-audio' : (_AudioContext ? 'web-audio' : 'wav-blob'));
+
+    return { unit, frequency, volume, sampleRate, mode };
+  }
+
+  function clampVolume(volume) {
+    return Math.max(0, Math.min(1, volume));
+  }
+
   /**
    * Schedule a sine-wave oscillator burst on the given destination node.
    *
@@ -135,7 +153,8 @@ function () {
     const { unit, frequency, volume, sampleRate } = opts;
     const channels     = 1;
     const bitsPerSample = 16;
-    const maxAmp       = Math.round(volume * 32767);
+    const safeVolume   = clampVolume(volume);
+    const maxAmp       = Math.round(safeVolume * 32767);
 
     // Collect Int16Array PCM sections to avoid a large up-front allocation
     const sections = [];
@@ -268,14 +287,10 @@ function () {
    * @returns {Promise<void>}               – Resolves when playback completes
    */
   function playMorseSymbols(symbolString, options) {
-    const opts       = options || {};
-    const wpm        = opts.wpm        || 12;
-    const unit       = opts.unit       !== undefined ? opts.unit : (1.2 / wpm);
-    const frequency  = opts.frequency  || 440;
-    const volume     = opts.volume     !== undefined ? opts.volume : 0.5;
-    const sampleRate = opts.sampleRate || 8000;
-    const mode       = opts.mode       || (_AudioContext ? 'web-audio' : 'wav-blob');
+    stopPlayback();
 
+    const opts = normalizeOptions(options);
+    const { unit, frequency, volume, sampleRate, mode } = opts;
     const resolvedOpts = { unit, frequency, volume, sampleRate };
 
     if (mode === 'web-audio' && _AudioContext) {
